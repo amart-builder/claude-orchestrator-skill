@@ -6,12 +6,14 @@ The goal is to cut token spend without losing intelligence where it matters.
 
 ## Why this works
 
-Two facts about how LLM conversations are billed:
+The dominant cost in a long session is not the size of any one file. It's the number of times the expensive model reaches for a tool. Every tool call re-sends the entire conversation to the top-tier model before it does anything. Twelve tool calls on a 150k-token context is roughly 1.8M tokens of re-reads in a single turn. Prompt caching softens that, but a tenth of a huge number on the priciest model is still the biggest line on the bill.
 
-1. Top-tier models cost several times more per token than Haiku.
-2. Everything the main model reads lands in its context and gets re-sent on every later turn. A 5,000 token file read on turn 3 is paid for again on turns 4, 5, 6 and so on.
+So there are two levers, in order of impact:
 
-So the real win is keeping bulk tokens out of the expensive context. A subagent can ingest 50k tokens of files on a cheap model and hand back a 300 token conclusion. You pay for the bulk once, at the cheap rate.
+1. **Fewer round-trips on the expensive model.** A 15-step investigation done directly is 15 expensive re-sends of the whole context. Bundled into one subagent, it's 15 cheap re-sends on a small fresh context plus 2 expensive ones (dispatch and result).
+2. **A smaller main context.** Bulk data that lands in the main context is re-paid on every later turn. A subagent ingests 50k tokens on a cheap model and hands back a 300-token conclusion.
+
+The core rule that makes this stick is a routing budget: before acting, the model estimates how many tool calls a task needs. Three or fewer, it does the work directly (delegation would cost more than it saves). More than three, it declares a delegation plan up front and routes the bulk work down. This was added after an early version, running as advisory prose, delegated once across 28 prompts and 354 tool calls. Good intentions weren't enough; a hard budget is.
 
 The skill also knows when NOT to delegate. Tiny tasks are cheaper done directly, and quality-critical work never gets routed down a tier to save money.
 
