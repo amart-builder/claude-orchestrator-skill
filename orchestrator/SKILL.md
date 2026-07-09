@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: Session-wide delegation mode that turns the main session model (expensive, high thinking, big context) into an orchestrator - it keeps judgment, decisions, planning, and synthesis itself, and routes bulk reading, searching, mechanical edits, and well-scoped coding to cheaper subagent models (Haiku/Sonnet/Opus), tiered and effort-tuned to each task, to cut token spend without losing quality. Use whenever the user types /orchestrator, says "orchestrator mode", "delegate mode", "manager mode", or asks to work in a token-saving mode where the smart model manages cheaper agents. Do NOT latch this mode for one-off requests like "answer in fewer tokens" - those are not a mode request. Once invoked it stays on for the rest of the conversation; invoke with arg "off" (or the user saying "orchestrator off") to end it.
+description: Session-wide delegation mode that turns the main session model (expensive, high thinking, big context) into an orchestrator - it keeps judgment, decisions, planning, and synthesis itself, and routes bulk reading, searching, mechanical edits, and well-scoped coding to cheaper subagent models (Haiku/Sonnet/Opus), and optionally to external vendor CLIs (Codex, Grok) if installed, tiered and effort-tuned to each task, to cut token spend without losing quality. Use whenever the user types /orchestrator, says "orchestrator mode", "delegate mode", "manager mode", or asks to work in a token-saving mode where the smart model manages cheaper agents. Do NOT latch this mode for one-off requests like "answer in fewer tokens" - those are not a mode request. Once invoked it stays on for the rest of the conversation; invoke with arg "off" (or the user saying "orchestrator off") to end it.
 ---
 
 # Orchestrator Mode
@@ -47,6 +47,8 @@ Model names below use the generic tiers the Agent tool accepts (`"haiku"`, `"son
 | **Haiku** (`model: "haiku"`) | Find/locate sweeps, read-and-summarize a file/log/document, mechanical edits with exact instructions, formatting and extraction, run-tests-and-report |
 | **Sonnet** (`model: "sonnet"`) | Well-scoped coding from a clear spec, multi-file exploration needing reasoning, research-and-synthesize, debugging with a clear repro, first-pass review, bundled investigations of unknown shape |
 | **Opus** (`model: "opus"`) | Fresh-context review of non-trivial code (never downgrade this one to save tokens), hard isolatable reasoning, tricky multi-file changes beyond Sonnet |
+| **Codex CLI** (Bash, see External lanes — optional) | Cross-model second review when stakes warrant it — complements, never replaces, the Opus fresh review (a different model family catches different blind spots). Also autonomous terminal-heavy jobs and overflow when your Claude limits are tight. Needs a Codex/OpenAI subscription or key. |
+| **Grok CLI** (Bash, see External lanes — optional) | Live web/X data reads, and experimental cheap-bulk coding under the trust rules in External lanes — not load-bearing work. Needs a Grok/X Premium account. |
 | **Yourself (main model)** | Decisions and trade-offs, anything ambiguous, plans, final synthesis, anything needing full conversation history, ALL user-facing and external writing, security-sensitive judgment, ≤3-call tasks |
 
 If the session model itself is the top tier, delegating to a peer tier saves nothing on per-token price — the only win there is context isolation (bulk stays out of the main context). Delegating *below* the session model wins on both price and isolation.
@@ -67,6 +69,25 @@ Mechanics:
 - **Demand reasoning from mid-tier models.** Haiku gets "do exactly this, don't overthink"; Sonnet/Opus on subtle work gets "think it through step by step before answering" — cheaper models do markedly better when told to. If you escalate to a multi-agent workflow tool (which needs its own explicit opt-in), use its per-stage effort option the same way.
 - **Verify what matters.** Before a subagent's load-bearing claim drives a decision or ships, spot-check it (a targeted read of cited lines — this is a sanctioned direct call). Never relay an unverified claim as fact.
 - **Escalate after one failure.** A wrong or thin Haiku result gets one re-run on Sonnet with a sharper prompt — not retry loops on the same tier, never silent acceptance.
+
+## External lanes: Codex CLI and Grok CLI (optional)
+
+If you also have vendor coding CLIs installed (OpenAI's Codex CLI, xAI's Grok CLI), they can serve as extra delegation lanes outside the Agent tool, dispatched via Bash. On a flat subscription they cost nothing extra and burn no Claude usage, but they see none of the conversation, and a full external dispatch is ~3 main-model round-trips (preflight, dispatch, re-verification) — so they take goals, not steps, with a fully self-contained spec, and the goal must be big enough to earn that overhead.
+
+Every external dispatch uses a spec contract: **objective, constraints, a runnable verification command, and a required report format** (STATUS/CHANGES/VERIFIED/GAPS). Universal rules:
+
+- **Preflight or fail.** Check the binary exists and auth works before dispatch (Codex: `codex login status`; Grok: `grok models`, which prints the logged-in state — `grok --help` proves only that the binary exists). If the lane is unavailable, say so and route elsewhere — never silently do the work yourself and present it as the lane's.
+- **The delegator re-runs verification.** The lane's "it works" and its exit code are not evidence. Diff the workspace and run the verification command yourself before believing anything.
+- **Wrap every call in `timeout`** (5-7 min for small tasks). These CLIs can hang.
+- **Isolated workspaces** when a lane edits files in parallel with others, or files you don't want to risk.
+- **Never** for user-facing writing or anything needing conversation history.
+
+**Codex CLI.** Dispatch shape:
+`timeout 420 codex exec --sandbox workspace-write --skip-git-repo-check -c model_reasoning_effort=high --output-last-message <out.txt> - < spec.md`
+Best uses: a cross-model review pass on top of (not instead of) your Opus fresh review — opportunistic, when stakes warrant, not on every change; autonomous terminal-heavy tasks; overflow when Claude limits are tight. A known failure mode: it fills factual gaps with plausible unsourced claims — tell it explicitly what must be cited.
+
+**Grok CLI.** Dispatch shape:
+`timeout 420 grok --prompt-file spec.md -m <model> --output-format plain --sandbox workspace --cwd <dir>` plus `--always-approve` when it must edit files — always paired with `--sandbox workspace`, and only in throwaway directories (unsandboxed `--always-approve` auto-approves arbitrary shell). Beware: an invalid sandbox profile only prints a warning and continues UNSANDBOXED — check stderr for "sandbox could not be applied". Treat Grok as an experimental lane until it earns trust: in testing it has exited 0 while changing nothing (a clean-exit silent no-op), so never trust its exit code or narration — always diff and re-verify. Its proven strength is live web/X data, not load-bearing code.
 
 ## What does NOT change
 

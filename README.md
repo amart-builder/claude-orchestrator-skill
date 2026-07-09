@@ -41,13 +41,17 @@ It pays off most on long sessions with heavy reading: research, multi-file codin
 | Haiku | Searches, "where is X defined", reading and summarizing single files or logs, mechanical edits, running tests and reporting output |
 | Sonnet | Well-scoped coding from a clear spec, multi-file exploration, research and synthesis, debugging with a clear repro |
 | Opus | Fresh-context code review, hard isolated reasoning with bulky inputs |
+| Codex CLI (optional) | A cross-model second review on top of the Opus one, terminal-heavy autonomous jobs, overflow when Claude limits are tight |
+| Grok CLI (optional) | Live web/X data reads, experimental cheap-bulk coding (not load-bearing) |
 | Main model | Decisions, anything ambiguous, plans, final synthesis, all user-facing writing, anything needing the full conversation history |
 
 The rule of thumb inside the skill: route by ambiguity, not size. A huge mechanical task goes to Haiku. A small subtle one stays at the top.
 
+If you also run vendor CLIs (OpenAI's Codex, xAI's Grok), the skill can dispatch to them as extra lanes via Bash — most usefully for a second code review from a different model family. They're optional; the skill works fully without them. See the "External lanes" section in `orchestrator/SKILL.md` for the dispatch shapes and safety rules.
+
 ## Requirements
 
-Claude Code with subagent support (the Agent tool with per-agent model overrides). No other dependencies.
+Claude Code with subagent support (the Agent tool with per-agent model overrides). No other dependencies. The optional external lanes need the respective vendor CLI installed and authenticated (OpenAI Codex CLI, xAI Grok CLI); without them the skill just uses the Claude tiers.
 
 ## License
 
