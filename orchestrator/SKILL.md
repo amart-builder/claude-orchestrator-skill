@@ -19,7 +19,7 @@ Never save tokens on judgment. Skipping a consult or fresh review on client-faci
 1. User authorization, safety, and standing instructions (CLAUDE.md, project rules) outrank everything here.
 2. The CEO keeps ambiguous judgment, synthesis, and all user-facing authorship.
 3. Consult the COO when an independent frame could materially change the answer.
-4. Delegate bounded evidence-gathering and execution; route by ambiguity and expected CEO round-trips.
+4. Delegate bounded evidence-gathering and execution; route by ambiguity, expected CEO round-trips (these decide whether to delegate, not which tier), and when the judgment is needed — upfront (orchestrate), during execution (checkpoint), or only at the end (verify).
 5. Acceptance verification stays independent of whoever executed, and is exempt from the call budget.
 6. The CEO decides reversible, in-scope trade-offs and explains material ones; the user decides goals, values, money, public commitments, and costly irreversibility.
 7. Then, and only then, minimize CEO context and round-trips.
@@ -83,7 +83,7 @@ Name the paths worth reading in the brief — don't invite a repository crawl. E
 
 ## The call budget (canonical)
 
-**Every tool call the CEO makes re-sends the entire conversation** — cost per turn ≈ (CEO round-trips) × (context size); caching only softens it. Measured proof (2026-07-02): an advisory version of this mode ran 28 prompts, 354 CEO calls, and delegated once. The failure mode is always under-delegation. Decide before the first tool call of every turn:
+**Every tool call the CEO makes re-sends the entire conversation** — cost per turn ≈ (CEO round-trips) × (context size); caching only softens it. Measured proof (2026-07-02): an advisory version of this mode ran 28 prompts, 354 CEO calls, and delegated once. The measured failure was severe under-delegation — but the overhead is real too: each handoff carries a roughly fixed coordination cost (brief out, report back), so a worker must absorb enough work to repay it. Decide before the first tool call of every turn:
 
 - **≤ 3 tool calls** → do it directly; delegating costs more than it saves. (Carve-outs: creative/strategic turns still get their COO consult or panel, and acceptance verification never counts.)
 - **> 3 calls** → carve the work into delegated goals and **declare the routing in your first line, before any tool call**: "~10 calls — search to Haiku, fix to Sonnet in DO mode; I'll verify and synthesize." Direct calls in a delegating turn are reserved for dispatching, verification, and actions genuinely needing full conversation history.
@@ -93,6 +93,8 @@ Name the paths worth reading in the brief — don't invite a repository crawl. E
 - A harness hook (`~/.claude/hooks/orchestrator-budget.py`) nudges after 5 direct calls with no dispatch. Treat it as a breach signal — delegate the remainder or state in one line why direct is right.
 
 Escalation ladder: a wrong or thin cheap-worker result gets one re-run on the next tier with a sharper prompt — no same-tier retry loops, never silent acceptance. Route by **ambiguity, not size**: huge-but-mechanical goes down; small-but-subtle stays up. Between tiers, take the higher.
+
+Long feedback-driven work (experiments, tuning, iterative search) doesn't fire-and-forget: keep one worker and set 1-2 **result-triggered checkpoints** ("after the first N materially different attempts", "when progress stalls") where the CEO re-ranks options, redirects, or kills a dead-end path — not time-based check-ins, and not step-level supervision. Adaptive stopping is most of the value, and upfront rankings are unreliable when results are the real signal (measured: an executor with mid-task checkpoints kept ~90% of frontier-solo quality at ~34% of the cost; the upfront ranking of options contributed nothing). Checkpoints resume the same worker — its context and cache accumulate — never a fresh spawn.
 
 ## Leading the team
 
@@ -104,7 +106,7 @@ Escalation ladder: a wrong or thin cheap-worker result gets one re-run on the ne
 
 ## Non-code routing (most of the real week)
 
-- **Research**: Haiku/Sonnet sweep fan-outs; X data through Grok if you have it; synthesis and the "so what" stay with the CEO.
+- **Research**: Haiku/Sonnet sweep fan-outs with explicitly disjoint scopes (blind workers duplicate each other's reading; overlap is reserved for deliberate blind comparison or independent verification); X data through Grok if you have it; synthesis and the "so what" stay with the CEO.
 - **Strategy and business decisions**: COO consult by default, skeptic worker when stakes are real; the decision never delegates.
 - **Client deliverables and outbound writing**: fact-gathering before and adversarial critique after are delegable; the drafting never is — every word a human reads is written by the CEO in the user's voice.
 - **Sales and ops grunt** (lists, enrichment, formatting, CRM hygiene): Haiku with exact instructions; judgment about people and money stays with the CEO.
