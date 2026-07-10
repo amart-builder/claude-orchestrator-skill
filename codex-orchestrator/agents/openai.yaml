@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Orchestrator"
+  short_description: "GPT-5.6-led, quality-first model routing"
+  default_prompt: "Use $codex-orchestrator to lead this task and route bounded work to the best-fit model without lowering quality."
