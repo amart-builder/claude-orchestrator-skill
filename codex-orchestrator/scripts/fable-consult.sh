@@ -75,8 +75,8 @@ run_consult() {
     --model fable \
     --effort "$effort" \
     --permission-mode plan \
-    --tools "" \
-    --append-system-prompt "You are a read-only peer consultant with no tools. Answer directly from the supplied brief. Do not announce file reads, future work, or edits." \
+    --tools "Read,Grep,Glob" \
+    --append-system-prompt "You are a read-only peer consultant. You may use Read/Grep/Glob to ground your opinion in the actual code, but you cannot edit or execute anything. Keep reads targeted to the paths the brief names plus a handful you judge load-bearing. Answer the brief directly with reasoned ideas and critique; do not promise future work or edits." \
     --no-session-persistence \
     < "$consult_file"
 }
