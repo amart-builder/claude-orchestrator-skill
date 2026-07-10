@@ -1,25 +1,21 @@
 # Multi-Model Orchestrator Skills
 
-Two native skills that turn a frontier model into a quality-first team leader.
+Two native skills that make a frontier model the CEO of a cross-vendor agent team. Same skill, same rules; the only difference is who drives.
 
-| Skill | Intended lead | Independent peer |
+| Skill | CEO (drives the session) | COO (independent peer) |
 |---|---|---|
 | `orchestrator` for Claude Code | Fable 5 | GPT-5.6 Sol |
 | `codex-orchestrator` for Codex and ChatGPT desktop | GPT-5.6 Sol | Fable 5 |
 
-Both skills follow the same principle: the lead keeps the work where its judgment, creativity, context, or voice matters, and delegates bounded work only when another model can preserve the quality bar. The lead also chooses the worker model by task fit, expected quality, cost, latency, context isolation, and tools. Price alone never decides the route.
+Both share one North Star: make the driver the best multi-disciplinary agent it can be. Maximize its creativity and thoughtfulness, get it other smart opinions, have it lead the team instead of doing everything itself, and keep it token-efficient without ever trading away quality. A short precedence list at the top of each skill settles rule conflicts, in order: user authorization and safety first, judgment and authorship stay with the CEO, consult the COO when an independent frame could change the answer, delegate bounded work, keep acceptance verification independent, and only then minimize cost.
 
-## The delegation gate
+## How it routes
 
-A task is delegable only when all five conditions hold:
+- **The call budget.** Before each turn the CEO estimates the tool calls needed. Three or fewer, it works directly. More, it declares a routing plan in its first line and hands the bulk to workers. Creative and strategic turns still get a COO consult even when small, and the CEO re-running acceptance verification never counts against the budget.
+- **Two spawn modes, chosen per task.** DO mode gives a worker full tools to actually change things, under a spec contract whose acceptance check the CEO re-runs itself. ADVISE mode is for second opinions and review: no edits, no changes, but never toolless. An adviser keeps read access so its opinion is grounded in the actual code, and review is always ADVISE because a reviewer should not be able to modify the thing it reviews.
+- **The COO relationship.** The CEO consults its COO by default on creative, strategic, and high-stakes work, using a structured brief and a structured response contract (disagreements, assumptions, evidence with references, recommended change, confidence). The COO can spawn its own read-only subagents to gather evidence, and must disclose what it delegated. Disagreements get settled by evidence; what evidence cannot settle goes to the user as a named decision.
 
-1. **Bounded:** the lead can specify the objective, inputs, constraints, and definition of done without leaving hidden judgment calls.
-2. **Verifiable:** the lead can check the result cheaply and concretely without redoing the task.
-3. **Model-fit:** a verified worker is expected to match or beat the required quality for that task type.
-4. **Worth the round trip:** dispatch, review, and likely retry cost less than direct execution.
-5. **Context-safe:** the worker does not need the full conversation to get the task right.
-
-The lead always keeps ambiguity resolution, synthesis across workstreams, go or no-go decisions, security-sensitive judgment, and final user-facing prose.
+The CEO always keeps ambiguity resolution, synthesis across workstreams, go or no-go decisions, security-sensitive judgment, and final user-facing prose.
 
 ## Why two skills
 
@@ -55,13 +51,13 @@ The skill cannot switch the active session model. If Fable 5 is not active, it r
 ```bash
 git clone https://github.com/amart-builder/claude-orchestrator-skill.git
 mkdir -p ~/.agents/skills
-cp -R claude-orchestrator-skill/codex-orchestrator ~/.agents/skills/
+cp -R claude-orchestrator-skill/codex-orchestrator ~/.agents/skills/orchestrator
 ```
 
 Start a new Codex task and invoke:
 
 ```text
-$codex-orchestrator
+$orchestrator
 ```
 
 You can also say `orchestrator mode` or `manager mode`. GPT-5.6 Sol is the intended lead. The skill reports a model mismatch instead of pretending it changed the active model.
