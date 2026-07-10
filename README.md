@@ -1,8 +1,10 @@
 # Claude Orchestrator Skill
 
-A toggleable mode for Claude Code. Turn it on and the expensive model you're chatting with stops doing grunt work. It acts as a manager: it keeps the thinking (decisions, plans, synthesis, anything you'll read) and delegates the bulk work (file reading, searches, mechanical edits, well-scoped coding) to cheaper models like Haiku and Sonnet running as subagents.
+A toggleable mode for Claude Code. Turn it on and the expensive model you're chatting with stops doing grunt work. It acts as a team leader: it keeps the thinking (decisions, plans, synthesis, anything you'll read) and delegates the bulk work (file reading, searches, mechanical edits, well-scoped coding) to cheaper models like Haiku and Sonnet running as subagents.
 
-The goal is to cut token spend without losing intelligence where it matters.
+The goal is the best work the team can produce, at the lowest spend that doesn't compromise it.
+
+New in this version: a peer-consultant lane (GPT-5.6 Sol through the Codex CLI, if you have it), a leadership playbook for getting and settling second opinions, routing guidance for non-coding work, and an optional hook that enforces the delegation budget instead of just asking nicely.
 
 ## Why this works
 
@@ -41,17 +43,60 @@ It pays off most on long sessions with heavy reading: research, multi-file codin
 | Haiku | Searches, "where is X defined", reading and summarizing single files or logs, mechanical edits, running tests and reporting output |
 | Sonnet | Well-scoped coding from a clear spec, multi-file exploration, research and synthesis, debugging with a clear repro |
 | Opus | Fresh-context code review, hard isolated reasoning with bulky inputs |
-| Codex CLI (optional) | A cross-model second review on top of the Opus one, terminal-heavy autonomous jobs, overflow when Claude limits are tight |
-| Grok CLI (optional) | Live web/X data reads, experimental cheap-bulk coding (not load-bearing) |
+| Codex CLI running GPT-5.6 Sol (optional) | Peer consults on creative and strategic decisions, a cross-model second review on top of the Opus one, terminal-heavy autonomous jobs, overflow when Claude limits are tight |
+| Grok CLI (optional) | Live web/X data reads, a cheap third opinion in idea panels, experimental cheap-bulk coding (not load-bearing) |
 | Main model | Decisions, anything ambiguous, plans, final synthesis, all user-facing writing, anything needing the full conversation history |
 
 The rule of thumb inside the skill: route by ambiguity, not size. A huge mechanical task goes to Haiku. A small subtle one stays at the top.
 
-If you also run vendor CLIs (OpenAI's Codex, xAI's Grok), the skill can dispatch to them as extra lanes via Bash — most usefully for a second code review from a different model family. They're optional; the skill works fully without them. See the "External lanes" section in `orchestrator/SKILL.md` for the dispatch shapes and safety rules.
+## Second opinions, built in
+
+Cost routing is only half the skill. The other half makes the model act like a leader instead of a dispatcher:
+
+- On creative, architectural, or strategic decisions, it consults GPT-5.6 Sol (read-only, through the Codex CLI) by default and synthesizes both views before committing. Different model family, different blind spots.
+- On genuinely open problems, it can fan out 2 or 3 subagents with different framings (builder, skeptic, user-advocate) and settle disagreements with evidence, not confidence. A disagreement the evidence can't settle goes to you as a named decision.
+- On hard-to-reverse or client-facing calls, it deliberately slows down and spends tokens on critique instead of racing to an answer.
+
+The SKILL.md carries calibrated trust rules for the external lanes, including why Sol's executed work always gets independently re-verified (its reward-hacking record is real) while its read-only opinions run freely.
+
+If you also run vendor CLIs (OpenAI's Codex, xAI's Grok), the skill dispatches to them as extra lanes via Bash. They're optional; the skill works fully without them. See the "External lanes" section in `orchestrator/SKILL.md` for the dispatch shapes and safety rules.
+
+## Optional: the enforcement hook
+
+A skill file can instruct, but it can't enforce. Real-session data showed the mode fading in long sessions: the model slides back into doing everything itself. The fix is a tiny hook that counts direct tool calls per turn and injects a one-line nudge into the model's context after 5 calls with no delegation (then every 5 after). It never blocks anything, and it exits silently on any error.
+
+Install (requires python3):
+
+```bash
+cp claude-orchestrator-skill/hooks/orchestrator-budget.py ~/.claude/hooks/
+```
+
+Then add to the `"hooks"` section of `~/.claude/settings.json` (merge with what's there):
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [{ "type": "command", "command": "python3 ~/.claude/hooks/orchestrator-budget.py", "timeout": 5 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [{ "type": "command", "command": "python3 ~/.claude/hooks/orchestrator-budget.py", "timeout": 5 }]
+      }
+    ]
+  }
+}
+```
+
+Trade-off to know: the hook spawns a python process after every tool call, roughly 50 to 100ms each. It also nudges in every session, not just orchestrator ones, on the theory that gentle delegation pressure is rarely wrong. Delete the two settings entries to turn it off.
 
 ## Requirements
 
-Claude Code with subagent support (the Agent tool with per-agent model overrides). No other dependencies. The optional external lanes need the respective vendor CLI installed and authenticated (OpenAI Codex CLI, xAI Grok CLI); without them the skill just uses the Claude tiers.
+Claude Code with subagent support (the Agent tool with per-agent model overrides). No other dependencies. The optional external lanes need the respective vendor CLI installed and authenticated (OpenAI Codex CLI with a ChatGPT subscription or API key, xAI Grok CLI); without them the skill just uses the Claude tiers. The optional enforcement hook needs python3.
 
 ## License
 
