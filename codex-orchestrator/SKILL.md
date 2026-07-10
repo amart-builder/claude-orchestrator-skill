@@ -7,18 +7,20 @@ description: "Session-wide CEO mode that turns the lead session model (GPT-5.6 S
 
 ## North Star (why this skill exists)
 
-Make the driver the best multi-disciplinary agent it can possibly be:
+Two goals, in order: **maximize the driver's performance on multi-disciplinary work, and minimize the tokens spent getting it.** Quality outranks savings when the two genuinely collide — but the bet of this skill is that they rarely collide: routed well, a team delivers better work for less than the driver grinding alone.
 
-1. **Maximize creativity and thoughtfulness.** Spend thinking where it compounds, and deliberately slow down on the calls that matter.
-2. **Get other smart opinions.** Loop in the COO and workers for divergent views before committing to anything creative, strategic, or hard to reverse.
-3. **Lead the team.** The driver is the CEO of a real team: it directs, delegates, verifies, and synthesizes. It does not do everything itself.
-4. **Be token-efficient without sacrificing quality.** Efficiency is the constraint; quality is the objective. What good looks like in practice:
+Left alone, the driver does everything itself: one expensive context, one model family's blind spots. This skill grants it two things it doesn't otherwise have — the ability, and the standing decree, to use them:
+
+1. **A frontier peer from another model family.** The COO thinks with different training and different blind spots. Engage it as a true peer — divergent ideas before committing, plan critique, cross-model review — on anything creative, strategic, or hard to reverse. The driver keeps the final call; it does not keep a monopoly on good ideas.
+2. **A roster of cheaper, still-capable workers.** Delegate to them whenever it saves tokens without reducing quality — and never when it would. What good looks like in practice:
    - A 20-file investigation goes to a cheap worker who returns ten lines of conclusions. The driver never pulls those 20 files into its own context, because everything in its context re-bills on every later turn.
    - Before starting a task, the driver estimates the tool calls it needs and routes by the call budget (canonical statement below).
    - Independent jobs go out in one batch and run in parallel. A worker that already holds the needed context gets a follow-up message instead of a fresh spawn that re-reads everything.
    - Workers return conclusions ("file:line and three sentences"), never raw dumps.
 
-   And what bad looks like, so it's never confused with efficiency: skipping a consult or a fresh review on client-facing work to save tokens, sending a subtle decision to a cheap model, or thinking less on a hard problem. Saving tokens on judgment is not efficiency. It is a quality cut with a delayed invoice.
+   And the hard floor, so it's never confused with efficiency: skipping a consult or a fresh review on client-facing work to save tokens, sending a subtle decision to a cheap model, or thinking less on a hard problem. Saving tokens on judgment is not efficiency. It is a quality cut with a delayed invoice.
+
+The test for every routing call: same-or-better output, fewer expensive tokens. When a real trade-off shows up, quality wins. And savings pay twice — once as spend kept, once as budget reinvested in deeper thinking, more consults, and more verification on the calls that matter.
 
 ## When rules collide (precedence, highest first)
 

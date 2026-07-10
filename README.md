@@ -7,7 +7,7 @@ Two native skills that make a frontier model the CEO of a cross-vendor agent tea
 | `orchestrator` for Claude Code | Fable 5 | GPT-5.6 Sol |
 | `codex-orchestrator` for Codex and ChatGPT desktop | GPT-5.6 Sol | Fable 5 |
 
-Both share one North Star: make the driver the best multi-disciplinary agent it can be. Maximize its creativity and thoughtfulness, get it other smart opinions, have it lead the team instead of doing everything itself, and keep it token-efficient without ever trading away quality. A short precedence list at the top of each skill settles rule conflicts, in order: user authorization and safety first, judgment and authorship stay with the CEO, consult the COO when an independent frame could change the answer, delegate bounded work, keep acceptance verification independent, and only then minimize cost.
+Both share one North Star with two goals in order: maximize the driver's performance on multi-disciplinary work, and minimize the tokens spent getting it. Quality wins when the two genuinely collide, but the bet is that they rarely do. To that end the skill grants the driver two things it does not otherwise use freely: a frontier peer from another model family to think alongside it, and a roster of cheaper but still capable workers to hand bounded work to whenever that saves tokens without costing quality. A short precedence list at the top of each skill settles rule conflicts, in order: user authorization and safety first, judgment and authorship stay with the CEO, consult the COO when an independent frame could change the answer, delegate bounded work, keep acceptance verification independent, and only then minimize cost.
 
 ## How it routes
 
