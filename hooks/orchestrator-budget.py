@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Delegation nudge hook (orchestrator 3-call budget).
+"""Delegation nudge hook (orchestrator delegation budget).
 
 Counts direct tool calls per turn (reset on each user prompt). If a turn
 passes NUDGE_AT direct calls with no subagent dispatch, injects a one-line
@@ -20,7 +20,7 @@ STATE_MAX_AGE_S = 7 * 86400
 NUDGE = (
     "Delegation nudge (automated, advisory only): {count} direct tool calls this turn "
     "with no subagent dispatch. If meaningful work remains, bundle the remainder into "
-    "a subagent per the orchestrator 3-call budget. If the turn is nearly done, you are "
+    "a subagent per the orchestrator delegation budget. If the turn is nearly done, you are "
     "a subagent yourself, or delegation doesn't fit, continue and ignore this."
 )
 

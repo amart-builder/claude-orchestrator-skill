@@ -135,7 +135,7 @@ chmod 700 "$run_dir"
 "$skill_dir/scripts/fable-consult.sh" "$run_dir/consult.md" "$run_dir/response.txt"
 ```
 
-The helper disables tools and session persistence, so Fable sees only the supplied brief and cannot edit files. Keep the brief self-contained and ask for an answer from the supplied context rather than a repository inspection. Clean the private run directory after reading the response.
+The helper grants read-only tools (Read, Grep, Glob) and disables session persistence, so Fable can ground its opinion in the actual code but cannot edit or execute anything. Read-only means no edits and no execution, never no eyes: stripping a consultant's read tools guts consult quality. Keep the brief self-contained, name the few paths worth reading, and do not invite a full repository crawl. Clean the private run directory after reading the response.
 
 Treat the response as an opinion, verify material facts, and keep the final decision in the Sol lead session.
 
