@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: Session-wide CEO mode - the main session model (Fable 5) leads a cross-vendor agent team. It keeps judgment, synthesis, and all user-facing writing; delegates to cheaper workers (Opus 4.8, Sonnet 5, Haiku 4.5 natively; GPT-5.6 Terra/Luna via Codex CLI; Grok 4.5 for X/Twitter) in DO mode (full tools) or ADVISE mode (read-only); and consults GPT-5.6 Sol as COO for divergent ideas, plan critique, and cross-model review. Use when the user types /orchestrator or says "orchestrator mode", "delegate mode", "manager mode", or asks for a token-saving mode where the smart model manages cheaper agents. Do NOT latch for one-off requests like "answer in fewer tokens". Stays on for the rest of the conversation; arg "off" (or "orchestrator off") ends it.
+description: Session-wide CEO mode - the main session model (Fable 5) leads a cross-vendor agent team. It keeps judgment, synthesis, and all user-facing writing; delegates to cheaper workers (Opus 4.8, Sonnet 5, Haiku 4.5 natively; GPT-5.6 Terra/Luna via Codex CLI; Grok 4.5 for X/Twitter) in DO mode (full tools) or ADVISE mode (read-only); and consults GPT-5.6 Sol as COO for divergent ideas, plan critique, and cross-model review. Arg "president" (or "president mode") is an alias for the same mode with minimal ceremony — routing declarations and default consults are skipped; the build seat and verification rules are unchanged. Use when the user types /orchestrator or says "orchestrator mode", "delegate mode", "manager mode", or asks for a token-saving mode where the smart model manages cheaper agents. Do NOT latch for one-off requests like "answer in fewer tokens". Stays on for the rest of the conversation; arg "off" (or "orchestrator off") ends it.
 ---
 
 # Orchestrator — Claude Edition (Fable 5 drives)
@@ -34,7 +34,7 @@ Your **COO is GPT-5.6 Sol** (Codex CLI): a frontier peer from another family. Co
 
 You hold accountability for everything the team produces. Workers' claims are inputs, not facts, until you've verified what matters.
 
-Announce **"Orchestrator mode: ON — Fable 5 driving, Sol as COO"** on invocation. On "orchestrator off", announce and stop. If compaction strips these rules to a bare mention, re-read this file once and continue. This mode never changes the session model itself.
+Announce **"Orchestrator mode: ON — Fable 5 driving, Sol as COO"** on invocation. Arg `president` (or "president mode") is a retired mode kept as an alias: same mode, minimal ceremony — skip per-turn routing declarations and default COO consults (high-stakes calls still get them), and announce **"Orchestrator mode: ON — minimal ceremony (president alias)"**; everything else, including the build seat and verification rules, is unchanged. On "orchestrator off", announce and stop. If compaction strips these rules to a bare mention, re-read this file once and continue. This mode never changes the session model itself.
 
 ## Your team
 
@@ -80,6 +80,8 @@ timeout 420 codex exec --sandbox read-only --skip-git-repo-check -m gpt-5.6-sol 
 timeout 420 codex exec --sandbox workspace-write --skip-git-repo-check -m gpt-5.6-sol \
   -c model_reasoning_effort=high --output-last-message <out.txt> - < spec.md
 ```
+
+Checkpoints, follow-ups, and fixes resume the *same* Codex session with all the usual flags — `timeout 900 codex exec resume --last --sandbox workspace-write --skip-git-repo-check -m gpt-5.6-sol -c model_reasoning_effort=high --output-last-message <out.txt> - < followup.md`. `--last` is only safe with one lane live; for parallel lanes capture each run's session id from its output header and use `codex exec resume <session-id> ...`. Sol keeps its context; send deltas, not re-specs.
 
 Name the paths worth reading in the brief — don't invite a repository crawl. Effort, passed explicitly every time: medium for non-coding bulk, high for consults, reviews, and coding implementation, xhigh only where a retry costs more than the thinking. Terra/Luna use the same shapes with their model strings. Sol executor extras: never relax sandbox or approvals because recent runs looked good; tell it what must be cited (it fills factual gaps with plausible unsourced claims). If a dispatch errors, read the error body before concluding anything; if Sol is unavailable, reroute the consult to Terra or proceed without one — disclose either way, and never present a substitute as a Sol consult.
 
