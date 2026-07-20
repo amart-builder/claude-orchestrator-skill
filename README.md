@@ -74,9 +74,9 @@ The tables are routing candidates, not permanent truth. Each skill verifies mode
 |---|---|
 | Fable 5 lead | Ambiguity, strategy, creative direction, cross-domain synthesis, high-stakes decisions, final prose |
 | Haiku | Locate and extract, mechanical edits, formatting, test execution, simple summaries |
-| Sonnet | Well-scoped coding, research synthesis, debugging with a clear reproduction, multi-file exploration |
-| Opus | Fresh-context review, hard isolated reasoning, tricky implementation |
-| GPT-5.6 Sol | Independent peer critique, terminal-heavy work, frontier cross-model review |
+| Sonnet | Research synthesis, multi-file exploration, debugging with a clear reproduction; coding only when it's very simple and certain to land |
+| Opus | Fresh-context review, hard isolated reasoning; backup coding implementer at max effort when Sol is unavailable |
+| GPT-5.6 Sol | Default coding implementer (high effort, spec in, held-out verification), independent peer critique, frontier cross-model review |
 | GPT-5.6 Terra | Balanced everyday agentic work through the Codex CLI |
 | GPT-5.6 Luna | Fast and affordable bounded work through the Codex CLI |
 | Grok | Live X research and an optional third perspective |
