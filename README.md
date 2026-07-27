@@ -46,6 +46,22 @@ Start a new Claude Code session, select Fable 5, and run:
 
 The skill cannot switch the active session model. If Fable 5 is not active, it reports the mismatch and continues safely on the selected model until you switch.
 
+### Opus mode
+
+If your session is running Claude Opus 5 rather than Fable 5, run:
+
+```text
+/orchestrator opus
+```
+
+This reassigns two seats and replaces one goal. Opus 5 drives and holds the build seat, GPT-5.6 Sol drops to an ADVISE-only adversarial peer that never touches a file, and the North Star's token-minimizing goal is suspended entirely: the mode is for operators who are not token-constrained and want the best answer rather than the cheapest. Sol is used through three plays, all read-only. **Diverge** hands it the problem cold with your leaning withheld, before you commit to an approach. **Red-team** asks it to break a plan you already have. **Cross-review** puts the finished artifact in front of it.
+
+The premise is decorrelated error. Two runs of the same model make correlated mistakes because the same training produces the same blind spots, so a second pass mostly agrees with the first. A model from a different lab fails in different places. The corollary is in the skill: agreement between the two is weaker evidence than it feels, and disagreement is the signal to slow down rather than to average.
+
+Opus mode also carries prompting rules specific to Opus 5, which behaves differently enough from earlier Opus models to need them: it self-verifies unprompted (so generic "double-check your work" instructions are banned as wasteful, while task-specific checks are kept as specification content), it delegates more readily than prior models (so the mode caps spawning), and it runs longer by default in both conversation and written files (so length is prompted for explicitly). Effort defaults to `xhigh` here rather than `high`.
+
+One rule in that section is worth lifting out, because it applies to any harness where the driver both builds and verifies: **the implementer does not certify completion.** An agent that chose the implementation, knows the acceptance check, and interprets its own ambiguous output is not verifying independently, no matter how fresh the command is. Acceptance criteria get written before implementation, and the check runs in a context that did not build the thing.
+
 ## Install the Codex-native skill
 
 ```bash
@@ -75,7 +91,7 @@ The tables are routing candidates, not permanent truth. Each skill verifies mode
 | Fable 5 lead | Ambiguity, strategy, creative direction, cross-domain synthesis, high-stakes decisions, final prose |
 | Haiku | Locate and extract, mechanical edits, formatting, test execution, simple summaries |
 | Sonnet | Research synthesis, multi-file exploration, debugging with a clear reproduction; coding only when it's very simple and certain to land |
-| Opus | Fresh-context review, hard isolated reasoning; backup coding implementer at max effort when Sol is unavailable |
+| Opus 5 | Fresh-context review, hard isolated reasoning; backup coding implementer at max effort when Sol is unavailable. Drives and holds the build seat in `opus` mode |
 | GPT-5.6 Sol | Default coding implementer (high effort, spec in, held-out verification), independent peer critique, frontier cross-model review |
 | GPT-5.6 Terra | Balanced everyday agentic work through the Codex CLI |
 | GPT-5.6 Luna | Fast and affordable bounded work through the Codex CLI |
