@@ -4,7 +4,7 @@ Two native skills that make a frontier model the CEO of a cross-vendor agent tea
 
 | Driving the session | Writes the code | Plan advisor | Reviewer (fresh context, adversarial) | Skill |
 |---|---|---|---|---|
-| **Claude Fable 5** | GPT-5.6 Sol, DO mode, high effort | the driver | Claude Opus 5, read-only | `orchestrator` for Claude Code |
+| **Claude Fable 5.1** | GPT-5.6 Sol, DO mode, high effort | the driver | Claude Opus 5, read-only | `orchestrator` for Claude Code |
 | **Claude Opus 5** | the driver | GPT-5.6 Sol, read-only | GPT-5.6 Sol, read-only | `orchestrator` for Claude Code |
 | **GPT-5.6 Sol** | the driver | Claude Opus 5, read-only | Claude Opus 5, read-only | `codex-orchestrator` for Codex and ChatGPT desktop |
 
@@ -39,7 +39,7 @@ mkdir -p ~/.claude/skills
 cp -R claude-orchestrator-skill/orchestrator ~/.claude/skills/
 ```
 
-Start a new Claude Code session on Fable 5 or Opus 5 and run:
+Start a new Claude Code session on Fable 5.1 or Opus 5 and run:
 
 ```text
 /orchestrator
@@ -47,7 +47,7 @@ Start a new Claude Code session on Fable 5 or Opus 5 and run:
 
 The skill detects the session model and takes that row. `/orchestrator fable` and `/orchestrator opus` force a row if you want to override the detection. `/orchestrator president` keeps the same seats with minimal ceremony: no per-turn routing declarations and no default peer consults, though high-stakes calls still get them, and the build seat and verification rules are unchanged. `orchestrator off` ends the mode.
 
-The skill cannot switch the active session model. If neither Fable 5 nor Opus 5 is active, it reports the mismatch and continues safely on the selected model until you switch.
+The skill cannot switch the active session model. If neither Fable 5.1 nor Opus 5 is active, it reports the mismatch and continues safely on the selected model until you switch.
 
 ### The Opus 5 row
 
@@ -85,7 +85,7 @@ The tables are routing candidates, not permanent truth. Each skill verifies mode
 
 | Candidate | Best-fit work |
 |---|---|
-| Fable 5 lead | Ambiguity, strategy, creative direction, cross-domain synthesis, high-stakes decisions, final prose |
+| Fable 5.1 lead | Ambiguity, strategy, creative direction, cross-domain synthesis, high-stakes decisions, final prose |
 | Haiku | Locate and extract, mechanical edits, formatting, test execution, simple summaries |
 | Sonnet | Research synthesis, multi-file exploration, debugging with a clear reproduction; coding only when it's very simple and certain to land |
 | Opus 5 | The reviewer seat when Fable drives: fresh-context adversarial review of every substantive result. Hard isolated reasoning. Backup coding implementer at max effort when Sol is unavailable. Drives and holds the build seat when it is the session model |
@@ -104,7 +104,7 @@ The tables are routing candidates, not permanent truth. Each skill verifies mode
 | GPT-5.6 Luna | Fast and affordable searches, extraction, mechanical changes, and test runs |
 | Native Codex subagent | Parallel exploration, context isolation, independent review |
 | Claude Sonnet or Haiku | Optional cross-model lanes when the Codex lanes are saturated |
-| Fable 5 | Optional third voice in a genuine panel; not part of the seat map |
+| Fable 5.1 | Optional third voice in a genuine panel; not part of the seat map |
 | Grok | Live X research and an optional third perspective |
 
 ## Use and transparency
@@ -148,7 +148,7 @@ This hook is Claude-specific. Do not install it as a Codex hook. The Codex skill
 
 ## Requirements
 
-- Claude skill: Claude Code with subagent support, running Fable 5 or Opus 5. The Codex CLI is required for the Sol lane in both rows, as builder under Fable and as peer under Opus. The Grok CLI is optional.
+- Claude skill: Claude Code with subagent support, running Fable 5.1 or Opus 5. The Codex CLI is required for the Sol lane in both rows, as builder under Fable and as peer under Opus. The Grok CLI is optional.
 - Codex skill: Codex with multi-agent support. The `claude` CLI is required for the Opus peer seats, which include the mandatory review gate.
 - External lanes must be installed, authenticated, and smoke-tested before use.
 - Model-specific execution must fall back cleanly when a named model is unavailable.
