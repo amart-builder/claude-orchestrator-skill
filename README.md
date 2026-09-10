@@ -55,6 +55,16 @@ When Opus 5 is driving, the North Star's token-minimizing goal is suspended enti
 
 That row also carries prompting rules specific to Opus 5, which behaves differently enough from earlier Opus models to need them: it self-verifies unprompted (so generic "double-check your work" instructions are banned as wasteful, while task-specific checks are kept as specification content), it delegates more readily than prior models (so the row caps spawning on coordination grounds), and it runs longer by default in both conversation and written files (so length is prompted for explicitly).
 
+## Install in Claude Cowork (claude.ai or the desktop app)
+
+Cowork loads skills from your Claude account, not from `~/.claude/skills`, so upload the folder as a skill:
+
+1. Zip the `orchestrator` folder from this repo (the folder name must stay `orchestrator`, matching the skill name, and `SKILL.md` must sit directly inside it).
+2. At claude.ai, open **Customize > Skills**, click **+**, then **Create skill**, then **Upload a skill**, and pick the zip. Code execution must be enabled first; on Team and Enterprise plans an owner enables skills under **Organization settings > Skills**.
+3. Open a Cowork session and say `orchestrator mode` (or type `/orchestrator`). It announces `Orchestrator mode: ON — Cowork, <model> driving, Claude-only team`.
+
+Inside Cowork there is no Codex or Grok, so the skill runs a Claude-only team: the session model plans and writes, Opus 5 subagents build and review, and every review is labeled `SAME-FAMILY REVIEW`. The Cowork section of `orchestrator/SKILL.md` spells out the six adjustments. Untested on the desktop app's VM and on claude.ai Cowork as of the v5.1 write; the adjustments were derived from desktop Cowork session logs.
+
 ## Install the Codex-native skill
 
 ```bash
